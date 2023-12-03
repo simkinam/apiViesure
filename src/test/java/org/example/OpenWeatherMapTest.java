@@ -35,10 +35,7 @@ public class OpenWeatherMapTest {
                 .as("Placeholder is a wrong text message!, it should be " + placeholder)
                 .isEqualTo(placeholder);
 
-        Actions action = new Actions(driver);
-        action.sendKeys(driver.findElement(searchCity), key)
-                .sendKeys(Keys.ENTER)
-                .perform();
+        searchCity(key);
         driver.findElement(submitSearch).click();
 
         WebDriverWait webDriverWait = new WebDriverWait(driver, Duration.ofMillis(222222));
@@ -48,41 +45,35 @@ public class OpenWeatherMapTest {
         webDriverWait.until(ExpectedConditions.textToBePresentInElement(driver.findElement(By.cssSelector(".current-container.mobile-padding h2")), key));
 
         String currentDateAndTime = driver.findElement(By.cssSelector(".current-container.mobile-padding .orange-text")).getText();
+        softAssertions.assertThat(currentDateAndTime)
+                .as("Date and time of chosen city is incorrect!")
+                .isEqualTo(getCurrentDateTimeForCity(key));
+        softAssertions.assertAll();
+        driver.quit();
     }
 
     public String getDateAndTime(String dateTimeText) {
-        // Parse the text and convert it to the desired format
         try {
             SimpleDateFormat originalFormat = new SimpleDateFormat("MMM d, hh:mma");
             Date date = originalFormat.parse(dateTimeText);
-
-            // Format the date to the desired output format
             SimpleDateFormat outputFormat = new SimpleDateFormat("MMM d, hh:mma");
             return outputFormat.format(date);
         } catch (ParseException e) {
             e.printStackTrace();
-            // Handle the parsing exception according to your requirements
             return null;
         }
     }
 
     @Step("Compare Date and Time with actual ones")
     public boolean compareDateAndTime(String dateTime1, String dateTime2) {
-        String city = "Australia/Sydney";  // Example: New York City
-
-        String cityDateTime = getCurrentDateTimeForCity(city);
-
-        // Parse the date and time strings and compare them
         try {
             SimpleDateFormat format = new SimpleDateFormat("MMM d, hh:mma");
             Date date1 = format.parse(dateTime1);
             Date date2 = format.parse(dateTime2);
 
-            // Compare the dates
             return date1.compareTo(date2) == 0;
         } catch (ParseException e) {
             e.printStackTrace();
-            // Handle the parsing exception according to your requirements
             return false;
         }
     }
@@ -91,4 +82,13 @@ public class OpenWeatherMapTest {
     public String getCurrentDateTimeForCity(String cityName) {
         return "city";
         }
+
+    @Step
+    public void searchCity(String key) {
+        Actions action = new Actions(driver);
+        action.sendKeys(driver.findElement(searchCity), key)
+                .sendKeys(Keys.ENTER)
+                .perform();
+
     }
+}
