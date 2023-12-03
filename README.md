@@ -9,9 +9,13 @@ First of all, I make sure that PUT request was successful and updated my value. 
 I have used DataProvider to parametrize inputs. This concluded me in following results:
 
 <img width="467" alt="image" src="https://github.com/simkinam/apiViesure/assets/152646712/1fee0b5f-2b0d-47f6-8ce7-feb9cad0afa5">
+
+
 As you can see, some of the tests have failed. 
 This was an actual problem:
+
 <img width="561" alt="image" src="https://github.com/simkinam/apiViesure/assets/152646712/f167b89a-b96c-407a-9e48-7534472bd142">
+
 I used a classic simple rounding first (Math one, so that 0.5 rounds to the nearest next, and then I tried also with the simple Integer cut).
 Its either I did not get what kind of rounding is expected, or is an actual Bug - dependent on actual expectation.
 I have checked with a value given in instruction - that works. The rest of requirements seem to be met, too.
@@ -29,4 +33,5 @@ This is a basic scenario.
 In a real world, I would also use more of PageObject model when navigating from one page to another and have clear expectation, when a page was open (such as visibility of elements and other conditions within constructor).
 Also the Webdriver wait would be a global variable instead of seen inside the test. 
 
-The UI tests were successful. 
+The UI tests were successful, no issue was found. 
+Thank you very much!
