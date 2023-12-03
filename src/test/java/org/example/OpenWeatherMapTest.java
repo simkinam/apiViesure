@@ -7,7 +7,6 @@ import org.assertj.core.api.SoftAssertions;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.interactions.Actions;
-import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.annotations.AfterTest;
@@ -82,11 +81,13 @@ public class OpenWeatherMapTest {
         softAssertions.assertThat(driver.findElement(noResultsFoundNotification).isDisplayed())
                 .as("User should be notified that no results were found")
                 .isTrue();
+        softAssertions.assertAll();
     }
 
     @Step("Navigate to open weather website")
     public  void navigateToOpenWeatherWebsite() {
         driver.get("https://openweathermap.org/");
+        webDriverWait.withTimeout(Duration.ofMillis(20000));
     }
 
     @Step("Click on a first one from dropdown menu of city search")
@@ -96,9 +97,7 @@ public class OpenWeatherMapTest {
 
     @Step("Select first row in dropdown of cities")
     public  void selectFirstRowInDropdownOfCities() {
-        WebDriverWait webDriverWait = new WebDriverWait(driver, Duration.ofMillis(222222));
         webDriverWait.until(ExpectedConditions.presenceOfElementLocated((By.cssSelector(".search-dropdown-menu li"))));
-
         driver.findElements(By.cssSelector(".search-dropdown-menu li")).get(0).click();
     }
 
@@ -113,9 +112,12 @@ public class OpenWeatherMapTest {
     @Step("Search for a city through a search input field")
     public void searchCity(String key) {
         Actions action = new Actions(driver);
-        action.sendKeys(driver.findElement(searchCity), key)
+        WebElement search = driver.findElement(searchCity);
+        action.moveToElement(search)
+                .sendKeys(search, key)
                 .sendKeys(Keys.ENTER)
                 .perform();
+        webDriverWait.until(ExpectedConditions.textToBePresentInElement(search,key));
         driver.findElement(submitSearch).click();
     }
 
